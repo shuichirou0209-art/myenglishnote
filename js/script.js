@@ -1,0 +1,241 @@
+// エントリを保存するための配列（ブラウザのローカルストレージを使用）
+let entries = [];
+let editingId = null; // 編集中のエントリID
+
+// ページ読み込み時に、保存されたデータを復元
+document.addEventListener('DOMContentLoaded', function() {
+    // ローカルストレージからデータを読み込む
+    const saved = localStorage.getItem('expressionEntries');
+    if (saved) {
+        entries = JSON.parse(saved);
+    }
+    
+    // 最初にすべてのエントリを表示
+    displayEntries(entries);
+    
+    // フォーム送信イベントリスナー
+    document.getElementById('entryForm').addEventListener('submit', createEntry);
+    
+    // 編集フォーム送信イベントリスナー
+    document.getElementById('editForm').addEventListener('submit', saveEdit);
+    
+    // 検索入力イベントリスナー
+    document.getElementById('searchInput').addEventListener('input', handleSearch);
+});
+
+// 新しいエントリを作成
+function createEntry(e) {
+    e.preventDefault();
+    
+    // フォームから値を取得
+    const expression = document.getElementById('expression').value.trim();
+    const meaning = document.getElementById('meaning').value.trim();
+    const examples = document.getElementById('examples').value.trim();
+    const notes = document.getElementById('notes').value.trim();
+    const tagsInput = document.getElementById('tags').value.trim();
+    
+    // タグをカンマで分割して配列に
+    const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
+    
+    // 新しいエントリオブジェクトを作成（IDと日付付き）
+    const newEntry = {
+        id: Date.now(), // ユニークなID
+        expression: expression,
+        meaning: meaning,
+        examples: examples,
+        notes: notes,
+        tags: tags,
+        createdAt: new Date().toLocaleString('ja-JP')
+    };
+    
+    // 配列に追加
+    entries.unshift(newEntry); // 新しいものが上に
+    
+    // ローカルストレージに保存
+    saveToLocalStorage();
+    
+    // 画面を更新
+    displayEntries(entries);
+    
+    // フォームをリセット
+    document.getElementById('entryForm').reset();
+    
+    // フィードバック
+    alert('表現を追加しました！');
+}
+
+// 編集モーダルを開く
+function openEditModal(id) {
+    // 該当するエントリを探す
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+    
+    editingId = id;
+    
+    // フォームに現在の値を入力
+    document.getElementById('editExpression').value = entry.expression;
+    document.getElementById('editMeaning').value = entry.meaning;
+    document.getElementById('editExamples').value = entry.examples;
+    document.getElementById('editNotes').value = entry.notes;
+    document.getElementById('editTags').value = entry.tags.join(', ');
+    
+    // モーダルを表示
+    document.getElementById('editModal').classList.add('show');
+}
+
+// 編集モーダルを閉じる
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('show');
+    editingId = null;
+    document.getElementById('editForm').reset();
+}
+
+// 編集を保存
+function saveEdit(e) {
+    e.preventDefault();
+    
+    if (editingId === null) return;
+    
+    // 該当するエントリを探す
+    const entry = entries.find(e => e.id === editingId);
+    if (!entry) return;
+    
+    // フォームから新しい値を取得
+    const newExpression = document.getElementById('editExpression').value.trim();
+    const newMeaning = document.getElementById('editMeaning').value.trim();
+    const newExamples = document.getElementById('editExamples').value.trim();
+    const newNotes = document.getElementById('editNotes').value.trim();
+    const newTagsInput = document.getElementById('editTags').value.trim();
+    const newTags = newTagsInput ? newTagsInput.split(',').map(tag => tag.trim()) : [];
+    
+    // エントリを更新
+    entry.expression = newExpression;
+    entry.meaning = newMeaning;
+    entry.examples = newExamples;
+    entry.notes = newNotes;
+    entry.tags = newTags;
+    
+    // 保存して表示更新
+    saveToLocalStorage();
+    displayEntries(entries);
+    
+    // モーダルを閉じる
+    closeEditModal();
+    
+    alert('表現を更新しました！');
+}
+
+// エントリを削除
+function deleteEntry(id) {
+    if (!confirm('この表現を削除してもよろしいですか？')) {
+        return;
+    }
+    
+    // 該当するエントリを配列から削除
+    entries = entries.filter(e => e.id !== id);
+    
+    // 保存して表示更新
+    saveToLocalStorage();
+    displayEntries(entries);
+    alert('表現を削除しました！');
+}
+
+// 検索機能
+function handleSearch(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    
+    if (searchTerm === '') {
+        // 検索が空の場合はすべてを表示
+        displayEntries(entries);
+    } else {
+        // 検索条件にマッチするエントリをフィルタリング
+        const filtered = entries.filter(entry => {
+            return (
+                entry.expression.toLowerCase().includes(searchTerm) ||
+                entry.meaning.toLowerCase().includes(searchTerm) ||
+                entry.examples.toLowerCase().includes(searchTerm) ||
+                entry.notes.toLowerCase().includes(searchTerm) ||
+                entry.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+        });
+        displayEntries(filtered);
+    }
+}
+
+// エントリ一覧を表示
+function displayEntries(entriesToDisplay) {
+    const container = document.getElementById('entriesList');
+    const countSpan = document.getElementById('entryCount');
+    
+    // エントリ件数を更新
+    countSpan.textContent = entriesToDisplay.length;
+    
+    // エントリがない場合
+    if (entriesToDisplay.length === 0) {
+        container.innerHTML = '<p class="empty-message">該当する表現がまだありません</p>';
+        return;
+    }
+    
+    // エントリをHTMLで生成
+    container.innerHTML = entriesToDisplay.map(entry => `
+        <div class="entry-card">
+            <div class="entry-header">
+                <div class="entry-expression">${escapeHtml(entry.expression)}</div>
+                <div class="entry-actions">
+                    <button class="btn btn-edit" onclick="openEditModal(${entry.id})">編集</button>
+                    <button class="btn btn-delete" onclick="deleteEntry(${entry.id})">削除</button>
+                </div>
+            </div>
+            
+            <div class="entry-meaning">
+                <strong>意味:</strong> ${escapeHtml(entry.meaning)}
+            </div>
+            
+            ${entry.examples ? `
+                <div class="entry-examples">
+                    <strong>用例:</strong>
+                    ${entry.examples.split('\n').map(ex => `<div class="example-item">• ${escapeHtml(ex)}</div>`).join('')}
+                </div>
+            ` : ''}
+            
+            ${entry.notes ? `
+                <div class="entry-notes">
+                    <strong>コメント:</strong> ${escapeHtml(entry.notes)}
+                </div>
+            ` : ''}
+            
+            ${entry.tags.length > 0 ? `
+                <div class="entry-tags">
+                    ${entry.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+                </div>
+            ` : ''}
+            
+            <small style="color: #999;">作成: ${entry.createdAt}</small>
+        </div>
+    `).join('');
+}
+
+// ローカルストレージに保存
+function saveToLocalStorage() {
+    localStorage.setItem('expressionEntries', JSON.stringify(entries));
+}
+
+// XSS対策用関数（HTMLをエスケープ）
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// モーダルの外側をクリックした時に閉じる
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById('editModal');
+    if (e.target === modal) {
+        closeEditModal();
+    }
+});
