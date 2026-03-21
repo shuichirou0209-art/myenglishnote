@@ -384,12 +384,10 @@ function updateDisplay() {
 
     container.innerHTML = pageEntries.map(entry => `
         <div class="entry-card">
-            <div class="entry-header">
-                <div class="entry-expression">${escapeHtml(entry.expression)}</div>
-                <div class="entry-actions">
-                    <button class="btn btn-edit" onclick="openEditModal(${entry.id})">編集</button>
-                    <button class="btn btn-delete" onclick="deleteEntry(${entry.id})">削除</button>
-                </div>
+            <div class="entry-expression">${escapeHtml(entry.expression)}</div>
+            <div class="entry-actions">
+                <button class="btn btn-edit" onclick="openEditModal(${entry.id})">編集</button>
+                <button class="btn btn-delete" onclick="deleteEntry(${entry.id})">削除</button>
             </div>
 
             <div class="entry-meaning">
