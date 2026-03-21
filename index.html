@@ -69,6 +69,12 @@
                 <span id="pageIndicatorBottom">1 / 1</span>
                 <button id="nextBottom" class="btn btn-secondary" onclick="changePage(1)">次へ</button>
             </div>
+
+            <div class="backup-actions">
+                <button id="exportButton" class="btn btn-secondary" onclick="exportEntries()">エクスポート (JSON)</button>
+                <button id="importButton" class="btn btn-secondary" onclick="document.getElementById('importFileInput').click()">インポート (JSON)</button>
+                <input id="importFileInput" type="file" accept="application/json" style="display:none" onchange="importEntries(event)">
+            </div>
         </div>
     </div>
 

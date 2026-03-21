@@ -168,6 +168,66 @@ function handleSearch(e) {
     updateDisplay();
 }
 
+// エクスポート
+function exportEntries() {
+    const data = JSON.stringify(entries, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `expression-stock-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// インポート
+function importEntries(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (!Array.isArray(imported)) {
+                throw new Error('JSONは配列である必要があります。');
+            }
+
+            // 欠損検証 (最低限のキー)
+            for (const entry of imported) {
+                if (typeof entry.expression !== 'string' || typeof entry.meaning !== 'string') {
+                    throw new Error('JSONフォーマットが不正です。');
+                }
+            }
+
+            if (!confirm('インポートすると現在のデータは上書きされます。実行しますか？')) {
+                return;
+            }
+
+            entries = imported.map((item) => ({
+                id: item.id || Date.now() + Math.floor(Math.random() * 9999),
+                expression: item.expression || '',
+                meaning: item.meaning || '',
+                examples: item.examples || '',
+                notes: item.notes || '',
+                tags: Array.isArray(item.tags) ? item.tags : [],
+                createdAt: item.createdAt || new Date().toLocaleString('ja-JP')
+            }));
+            
+            saveToLocalStorage();
+            filteredEntries = [...entries];
+            currentPage = 1;
+            updateDisplay();
+            alert('インポートが完了しました！');
+        } catch (error) {
+            alert('インポートに失敗しました: ' + error.message);
+        } finally {
+            document.getElementById('importFileInput').value = '';
+        }
+    };
+    reader.readAsText(file);
+}
+
 // ページ切り替え
 function changePage(direction) {
     const totalPages = Math.max(1, Math.ceil(filteredEntries.length / itemsPerPage));
