@@ -415,44 +415,87 @@ textarea:focus {
     flex-wrap: wrap;
 }
 
-/* レスポンシブ */
-@media (max-width: 600px) {
-    .container {
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.8em;
-    }
-
-    .entry-header {
-        flex-direction: column;
-    }
-
-    .entry-actions {
-        margin-top: 10px;
-    }
-
-    .btn-edit,
-    .btn-delete {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-
-    .modal-content {
-        width: 95%;
-        padding: 20px;
-    }
-
-    .modal-actions {
-        flex-direction: column;
-    }
-
-    .modal-actions .btn-primary,
-    .btn-cancel {
-        width: 100%;
-    }
+/* タグ絞り込み */
+.tag-filter-section {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
 }
+
+.tag-filter-container {
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+    max-height: 0;
+    padding: 0;
+}
+
+.tag-filter-container.expanded {
+    max-height: 1000px; /* 充分に大きくして全タグ表示を確実に */
+    padding-top: 20px;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.tag-filter-item {
+    display: inline-block;
+    background: #e2e8f0;
+    color: #4a5568;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9em;
+    border: 2px solid transparent;
+}
+
+.tag-filter-item:hover {
+    background: #cbd5e0;
+}
+
+.tag-filter-item.active {
+    background: #667eea;
+    color: white;
+    border-color: #5568d3;
+}
+
+.active-tags {
+    margin-bottom: 15px;
+}
+
+.active-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    background: #667eea;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.85em;
+    margin-right: 8px;
+    margin-bottom: 4px;
+}
+
+.active-tag-chip .remove-tag {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.active-tag-chip .remove-tag:hover {
+    opacity: 1;
+}
+
+.tag-filter-actions {
+    text-align: center;
+}
+
+/* レスポンシブ */
 
 /* Markdown斜体対応 */
 i {

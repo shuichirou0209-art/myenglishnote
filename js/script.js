@@ -4,6 +4,7 @@ let filteredEntries = [];
 let currentPage = 1;
 const itemsPerPage = 10;
 let editingId = null; // 編集中のエントリID
+let activeTags = []; // 選択中のタグ
 
 // ページ読み込み時に、保存されたデータを復元
 document.addEventListener('DOMContentLoaded', function() {
@@ -28,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 検索入力イベントリスナー
     document.getElementById('searchInput').addEventListener('input', handleSearch);
     
+    // タグ絞り込みイベントリスナー
+    document.getElementById('toggleTagFilter').addEventListener('click', toggleTagFilter);
+    document.getElementById('clearAllTags').addEventListener('click', clearAllTags);
+    
     // アコーディオンボタンイベントリスナー
     document.getElementById('toggleFormButton').addEventListener('click', toggleForm);
 });
@@ -46,6 +51,90 @@ function toggleForm() {
         container.classList.add('expanded');
         button.textContent = 'ー 閉じる';
     }
+}
+
+// タグ絞り込みアコーディオントグル
+function toggleTagFilter() {
+    const button = document.getElementById('toggleTagFilter');
+    const container = document.getElementById('tagFilterContainer');
+    
+    if (container.classList.contains('expanded')) {
+        // 折りたたむ
+        container.classList.remove('expanded');
+        button.textContent = 'タグで絞り込み';
+    } else {
+        // 展開
+        container.classList.add('expanded');
+        button.textContent = 'ー 閉じる';
+        updateTagList(); // 展開時にタグ一覧を更新
+    }
+}
+
+// タグ一覧を更新
+function updateTagList() {
+    const tagList = document.getElementById('tagList');
+    
+    // 全エントリからユニークなタグを収集
+    const allTags = new Set();
+    entries.forEach(entry => {
+        entry.tags.forEach(tag => allTags.add(tag));
+    });
+    
+    // タグをソートして表示
+    const sortedTags = Array.from(allTags).sort();
+    
+    tagList.innerHTML = sortedTags.map(tag => `
+        <span class="tag-filter-item ${activeTags.includes(tag) ? 'active' : ''}" 
+              onclick="toggleTag('${tag}')">${tag}</span>
+    `).join('');
+    
+    updateActiveTagsDisplay();
+}
+
+// タグのON/OFFを切り替え
+function toggleTag(tag) {
+    const index = activeTags.indexOf(tag);
+    if (index > -1) {
+        activeTags.splice(index, 1); // 削除
+    } else {
+        activeTags.push(tag); // 追加
+    }
+    updateTagList();
+    applyFilters();
+}
+
+// 選択中のタグを表示
+function updateActiveTagsDisplay() {
+    const activeTagsContainer = document.getElementById('activeTags');
+    
+    if (activeTags.length === 0) {
+        activeTagsContainer.innerHTML = '<p style="color: #999; font-size: 0.9em;">選択中のタグはありません</p>';
+        return;
+    }
+    
+    activeTagsContainer.innerHTML = activeTags.map(tag => `
+        <span class="active-tag-chip">
+            ${tag}
+            <span class="remove-tag" onclick="removeTag('${tag}')">×</span>
+        </span>
+    `).join('');
+}
+
+// 個別タグ削除
+function removeTag(tag) {
+    const index = activeTags.indexOf(tag);
+    if (index > -1) {
+        activeTags.splice(index, 1);
+        updateTagList();
+        applyFilters();
+    }
+}
+
+// すべてのタグを解除
+function clearAllTags() {
+    activeTags = [];
+    updateTagList();
+    applyFilters();
 }
 
 // 新しいエントリを作成
@@ -167,22 +256,31 @@ function deleteEntry(id) {
 
 // 検索機能
 function handleSearch(e) {
-    const searchTerm = e.target.value.toLowerCase().trim();
+    applyFilters();
+}
 
-    if (searchTerm === '') {
-        filteredEntries = [...entries];
-    } else {
-        filteredEntries = entries.filter(entry => {
-            return (
-                entry.expression.toLowerCase().includes(searchTerm) ||
-                entry.meaning.toLowerCase().includes(searchTerm) ||
-                entry.examples.toLowerCase().includes(searchTerm) ||
-                entry.notes.toLowerCase().includes(searchTerm) ||
-                entry.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-            );
-        });
-    }
-
+// フィルタ適用（キーワード検索 + タグ絞り込み）
+function applyFilters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    filteredEntries = entries.filter(entry => {
+        // キーワード検索（表現、意味、用例、コメント、タグ）
+        const matchesKeyword = searchTerm === '' || (
+            entry.expression.toLowerCase().includes(searchTerm) ||
+            entry.meaning.toLowerCase().includes(searchTerm) ||
+            entry.examples.toLowerCase().includes(searchTerm) ||
+            entry.notes.toLowerCase().includes(searchTerm) ||
+            entry.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+        );
+        
+        // タグ絞り込み（OR条件）
+        const matchesTags = activeTags.length === 0 || 
+            activeTags.some(activeTag => entry.tags.includes(activeTag));
+        
+        // AND条件で両方を満たす
+        return matchesKeyword && matchesTags;
+    });
+    
     currentPage = 1;
     updateDisplay();
 }

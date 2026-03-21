@@ -20,6 +20,22 @@
             <input type="text" id="searchInput" placeholder="検索: 表現、意味、タグで検索...">
         </div>
 
+        <!-- タグ絞り込みエリア -->
+        <div class="tag-filter-section">
+            <button type="button" id="toggleTagFilter" class="accordion-button">タグで絞り込み</button>
+            <div id="tagFilterContainer" class="tag-filter-container collapsed">
+                <div id="tagList" class="tag-list">
+                    <!-- タグ一覧はJavaScriptで動的に生成 -->
+                </div>
+                <div id="activeTags" class="active-tags">
+                    <!-- 選択中のタグチップはJavaScriptで動的に生成 -->
+                </div>
+                <div class="tag-filter-actions">
+                    <button id="clearAllTags" class="btn btn-secondary">すべて解除</button>
+                </div>
+            </div>
+        </div>
+
         <!-- エントリ作成フォーム -->
         <div class="form-section">
             <button type="button" id="toggleFormButton" class="accordion-button">＋ 表現を追加</button>
