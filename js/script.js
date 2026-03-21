@@ -27,7 +27,26 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 検索入力イベントリスナー
     document.getElementById('searchInput').addEventListener('input', handleSearch);
+    
+    // アコーディオンボタンイベントリスナー
+    document.getElementById('toggleFormButton').addEventListener('click', toggleForm);
 });
+
+// アコーディオン形式のフォームトグル
+function toggleForm() {
+    const button = document.getElementById('toggleFormButton');
+    const container = document.getElementById('entryFormContainer');
+    
+    if (container.classList.contains('collapsed')) {
+        // 展開
+        container.classList.remove('collapsed');
+        button.textContent = 'ー 閉じる';
+    } else {
+        // 折りたたむ
+        container.classList.add('collapsed');
+        button.textContent = '＋ 表現を追加';
+    }
+}
 
 // 新しいエントリを作成
 function createEntry(e) {

@@ -22,35 +22,37 @@
 
         <!-- エントリ作成フォーム -->
         <div class="form-section">
-            <h2>表現を追加</h2>
-            <form id="entryForm">
-                <div class="form-group">
-                    <label for="expression">表現 *</label>
-                    <input type="text" id="expression" placeholder="例：over the moon" required>
-                </div>
+            <button type="button" id="toggleFormButton" class="accordion-button">＋ 表現を追加</button>
+            <div id="entryFormContainer" class="form-container collapsed">
+                <form id="entryForm">
+                    <div class="form-group">
+                        <label for="expression">表現 *</label>
+                        <input type="text" id="expression" placeholder="例：over the moon" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="meaning">意味 *</label>
-                    <textarea id="meaning" placeholder="意味を入力" rows="3" required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="meaning">意味 *</label>
+                        <textarea id="meaning" placeholder="意味を入力" rows="3" required></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="examples">用例</label>
-                    <textarea id="examples" placeholder="使用例を入力（複数ある場合は改行で区切る）" rows="3"></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="examples">用例</label>
+                        <textarea id="examples" placeholder="使用例を入力（複数ある場合は改行で区切る）" rows="3"></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="notes">コメント</label>
-                    <textarea id="notes" placeholder="その他の注記" rows="2"></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="notes">コメント</label>
+                        <textarea id="notes" placeholder="その他の注記" rows="2"></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="tags">タグ</label>
-                    <input type="text" id="tags" placeholder="タグをカンマで区切って入力（例：文語,イディオム）">
-                </div>
+                    <div class="form-group">
+                        <label for="tags">タグ</label>
+                        <input type="text" id="tags" placeholder="タグをカンマで区切って入力（例：文語,イディオム）">
+                    </div>
 
-                <button type="submit" class="btn btn-primary">作成</button>
-            </form>
+                    <button type="submit" class="btn btn-primary">作成</button>
+                </form>
+            </div>
         </div>
 
         <!-- 一覧表示エリア -->

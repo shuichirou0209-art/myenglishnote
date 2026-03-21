@@ -63,6 +63,40 @@ h2 {
     margin-bottom: 30px;
 }
 
+.accordion-button {
+    width: 100%;
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+}
+
+.accordion-button:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+}
+
+.form-container {
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    max-height: 500px; /* 展開時の高さ */
+}
+
+.form-container.collapsed {
+    max-height: 0;
+    padding: 0;
+}
+
+.form-container form {
+    padding-top: 20px;
+}
+
 .form-group {
     margin-bottom: 15px;
 }
