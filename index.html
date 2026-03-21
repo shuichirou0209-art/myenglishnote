@@ -46,7 +46,7 @@
 
                 <div class="form-group">
                     <label for="tags">タグ</label>
-                    <input type="text" id="tags" placeholder="タグをカンマで区切って入力（例：文語,会話）">
+                    <input type="text" id="tags" placeholder="タグをカンマで区切って入力（例：文語,イディオム）">
                 </div>
 
                 <button type="submit" class="btn btn-primary">作成</button>
@@ -56,8 +56,18 @@
         <!-- 一覧表示エリア -->
         <div class="list-section">
             <h2>表現一覧 (<span id="entryCount">0</span>件)</h2>
+            <div class="pagination" id="paginationTop">
+                <button id="prevTop" class="btn btn-secondary" onclick="changePage(-1)">前へ</button>
+                <span id="pageIndicatorTop">1 / 1</span>
+                <button id="nextTop" class="btn btn-secondary" onclick="changePage(1)">次へ</button>
+            </div>
             <div id="entriesList" class="entries-list">
                 <p class="empty-message">エントリがまだありません</p>
+            </div>
+            <div class="pagination" id="paginationBottom">
+                <button id="prevBottom" class="btn btn-secondary" onclick="changePage(-1)">前へ</button>
+                <span id="pageIndicatorBottom">1 / 1</span>
+                <button id="nextBottom" class="btn btn-secondary" onclick="changePage(1)">次へ</button>
             </div>
         </div>
     </div>

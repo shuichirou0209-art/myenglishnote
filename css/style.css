@@ -348,6 +348,30 @@ textarea:focus {
     flex: 1;
 }
 
+.btn-secondary {
+    background: #64748b;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.pagination span {
+    font-weight: 700;
+    color: #333;
+}
+
 /* レスポンシブ */
 @media (max-width: 600px) {
     .container {

@@ -1,5 +1,8 @@
 // エントリを保存するための配列（ブラウザのローカルストレージを使用）
 let entries = [];
+let filteredEntries = [];
+let currentPage = 1;
+const itemsPerPage = 10;
 let editingId = null; // 編集中のエントリID
 
 // ページ読み込み時に、保存されたデータを復元
@@ -10,8 +13,11 @@ document.addEventListener('DOMContentLoaded', function() {
         entries = JSON.parse(saved);
     }
     
-    // 最初にすべてのエントリを表示
-    displayEntries(entries);
+    // 初期状態は全件を対象とする
+    filteredEntries = [...entries];
+
+    // 最初に表示
+    updateDisplay();
     
     // フォーム送信イベントリスナー
     document.getElementById('entryForm').addEventListener('submit', createEntry);
@@ -142,14 +148,12 @@ function deleteEntry(id) {
 
 // 検索機能
 function handleSearch(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    
+    const searchTerm = e.target.value.toLowerCase().trim();
+
     if (searchTerm === '') {
-        // 検索が空の場合はすべてを表示
-        displayEntries(entries);
+        filteredEntries = [...entries];
     } else {
-        // 検索条件にマッチするエントリをフィルタリング
-        const filtered = entries.filter(entry => {
+        filteredEntries = entries.filter(entry => {
             return (
                 entry.expression.toLowerCase().includes(searchTerm) ||
                 entry.meaning.toLowerCase().includes(searchTerm) ||
@@ -158,26 +162,50 @@ function handleSearch(e) {
                 entry.tags.some(tag => tag.toLowerCase().includes(searchTerm))
             );
         });
-        displayEntries(filtered);
     }
+
+    currentPage = 1;
+    updateDisplay();
 }
 
-// エントリ一覧を表示
-function displayEntries(entriesToDisplay) {
+// ページ切り替え
+function changePage(direction) {
+    const totalPages = Math.max(1, Math.ceil(filteredEntries.length / itemsPerPage));
+    currentPage += direction;
+    if (currentPage < 1) currentPage = 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    updateDisplay();
+}
+
+// 表示更新（ページネーション対応）
+function updateDisplay() {
     const container = document.getElementById('entriesList');
     const countSpan = document.getElementById('entryCount');
-    
-    // エントリ件数を更新
-    countSpan.textContent = entriesToDisplay.length;
-    
-    // エントリがない場合
-    if (entriesToDisplay.length === 0) {
-        container.innerHTML = '<p class="empty-message">該当する表現がまだありません</p>';
+    const pageIndicatorTop = document.getElementById('pageIndicatorTop');
+    const pageIndicatorBottom = document.getElementById('pageIndicatorBottom');
+
+    const totalItems = filteredEntries.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageEntries = filteredEntries.slice(start, end);
+
+    countSpan.textContent = totalItems;
+    pageIndicatorTop.textContent = `${currentPage} / ${totalPages}`;
+    pageIndicatorBottom.textContent = `${currentPage} / ${totalPages}`;
+
+    // ボタン活性化/非活性化
+    document.getElementById('prevTop').disabled = document.getElementById('prevBottom').disabled = currentPage === 1;
+    document.getElementById('nextTop').disabled = document.getElementById('nextBottom').disabled = currentPage === totalPages;
+
+    if (totalItems === 0) {
+        container.innerHTML = '<p class="empty-message">該当する表現がありません</p>';
         return;
     }
-    
-    // エントリをHTMLで生成
-    container.innerHTML = entriesToDisplay.map(entry => `
+
+    container.innerHTML = pageEntries.map(entry => `
         <div class="entry-card">
             <div class="entry-header">
                 <div class="entry-expression">${escapeHtml(entry.expression)}</div>
@@ -186,33 +214,41 @@ function displayEntries(entriesToDisplay) {
                     <button class="btn btn-delete" onclick="deleteEntry(${entry.id})">削除</button>
                 </div>
             </div>
-            
+
             <div class="entry-meaning">
                 <strong>意味:</strong> ${escapeHtml(entry.meaning)}
             </div>
-            
+
             ${entry.examples ? `
                 <div class="entry-examples">
                     <strong>用例:</strong>
                     ${entry.examples.split('\n').map(ex => `<div class="example-item">• ${escapeHtml(ex)}</div>`).join('')}
                 </div>
             ` : ''}
-            
+
             ${entry.notes ? `
                 <div class="entry-notes">
                     <strong>コメント:</strong> ${escapeHtml(entry.notes)}
                 </div>
             ` : ''}
-            
+
             ${entry.tags.length > 0 ? `
                 <div class="entry-tags">
                     ${entry.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
                 </div>
             ` : ''}
-            
+
             <small style="color: #999;">作成: ${entry.createdAt}</small>
         </div>
     `).join('');
+}
+
+// エントリ一覧を表示（旧displayEntriesの互換）
+function displayEntries(entriesToDisplay) {
+    entries = entriesToDisplay;
+    filteredEntries = [...entries];
+    currentPage = 1;
+    updateDisplay();
 }
 
 // ローカルストレージに保存
