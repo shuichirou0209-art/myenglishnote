@@ -404,6 +404,7 @@ function updateDisplay() {
             ${entry.notes ? `
                 <div class="entry-notes">
                     <strong>コメント:</strong> ${parseMarkdown(entry.notes)}
+                </div>
             ` : ''}
 
             ${entry.tags.length > 0 ? `
