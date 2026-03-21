@@ -453,3 +453,8 @@ textarea:focus {
         width: 100%;
     }
 }
+
+/* Markdown斜体対応 */
+i {
+    font-style: italic;
+}

@@ -351,7 +351,9 @@ function parseMarkdown(text) {
     if (!text) return '';
     // まずHTMLエスケープしてから*text*を<i>text</i>に変換
     const escaped = escapeHtml(text);
-    return escaped.replace(/\*([^*]+)\*/g, '<i>$1</i>');
+    const result = escaped.replace(/\*([^*]+)\*/g, '<i>$1</i>');
+    console.log('parseMarkdown input:', text, 'output:', result);
+    return result;
 }
 
 // モーダルの外側をクリックした時に閉じる
