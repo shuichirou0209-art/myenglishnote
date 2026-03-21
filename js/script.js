@@ -295,19 +295,19 @@ function updateDisplay() {
             </div>
 
             <div class="entry-meaning">
-                <strong>意味:</strong> ${parseMarkdown(escapeHtml(entry.meaning))}
+                <strong>意味:</strong> ${parseMarkdown(entry.meaning)}
             </div>
             
             ${entry.examples ? `
                 <div class="entry-examples">
                     <strong>用例:</strong>
-                    ${entry.examples.split('\n').map(ex => `<div class="example-item">• ${parseMarkdown(escapeHtml(ex))}</div>`).join('')}
+                    ${entry.examples.split('\n').map(ex => `<div class="example-item">• ${parseMarkdown(ex)}</div>`).join('')}
                 </div>
             ` : ''}
             
             ${entry.notes ? `
                 <div class="entry-notes">
-                    <strong>コメント:</strong> ${parseMarkdown(escapeHtml(entry.notes))}
+                    <strong>コメント:</strong> ${parseMarkdown(entry.notes)}
             ` : ''}
 
             ${entry.tags.length > 0 ? `
@@ -349,8 +349,9 @@ function escapeHtml(text) {
 // シンプルMarkdown変換（斜体のみ）
 function parseMarkdown(text) {
     if (!text) return '';
-    // *text* を <i>text</i> に変換
-    return text.replace(/\*([^*]+)\*/g, '<i>$1</i>');
+    // まずHTMLエスケープしてから*text*を<i>text</i>に変換
+    const escaped = escapeHtml(text);
+    return escaped.replace(/\*([^*]+)\*/g, '<i>$1</i>');
 }
 
 // モーダルの外側をクリックした時に閉じる
