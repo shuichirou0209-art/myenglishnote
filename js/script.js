@@ -295,20 +295,19 @@ function updateDisplay() {
             </div>
 
             <div class="entry-meaning">
-                <strong>意味:</strong> ${escapeHtml(entry.meaning)}
+                <strong>意味:</strong> ${parseMarkdown(escapeHtml(entry.meaning))}
             </div>
-
+            
             ${entry.examples ? `
                 <div class="entry-examples">
                     <strong>用例:</strong>
-                    ${entry.examples.split('\n').map(ex => `<div class="example-item">• ${escapeHtml(ex)}</div>`).join('')}
+                    ${entry.examples.split('\n').map(ex => `<div class="example-item">• ${parseMarkdown(escapeHtml(ex))}</div>`).join('')}
                 </div>
             ` : ''}
-
+            
             ${entry.notes ? `
                 <div class="entry-notes">
-                    <strong>コメント:</strong> ${escapeHtml(entry.notes)}
-                </div>
+                    <strong>コメント:</strong> ${parseMarkdown(escapeHtml(entry.notes))}
             ` : ''}
 
             ${entry.tags.length > 0 ? `
@@ -345,6 +344,13 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// シンプルMarkdown変換（斜体のみ）
+function parseMarkdown(text) {
+    if (!text) return '';
+    // *text* を <i>text</i> に変換
+    return text.replace(/\*([^*]+)\*/g, '<i>$1</i>');
 }
 
 // モーダルの外側をクリックした時に閉じる
