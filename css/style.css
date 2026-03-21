@@ -84,17 +84,18 @@ h2 {
 
 .form-container {
     overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-    max-height: 500px; /* 展開時の高さ */
-}
-
-.form-container.collapsed {
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
     max-height: 0;
     padding: 0;
 }
 
-.form-container form {
+.form-container.expanded {
+    max-height: 1800px; /* 充分に大きくして全項目表示を確実に */
     padding-top: 20px;
+}
+
+.form-container form {
+    padding-top: 0;
 }
 
 .form-group {

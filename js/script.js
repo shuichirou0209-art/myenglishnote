@@ -37,14 +37,14 @@ function toggleForm() {
     const button = document.getElementById('toggleFormButton');
     const container = document.getElementById('entryFormContainer');
     
-    if (container.classList.contains('collapsed')) {
-        // 展開
-        container.classList.remove('collapsed');
-        button.textContent = 'ー 閉じる';
-    } else {
+    if (container.classList.contains('expanded')) {
         // 折りたたむ
-        container.classList.add('collapsed');
+        container.classList.remove('expanded');
         button.textContent = '＋ 表現を追加';
+    } else {
+        // 展開
+        container.classList.add('expanded');
+        button.textContent = 'ー 閉じる';
     }
 }
 
