@@ -384,7 +384,7 @@ function updateDisplay() {
 
     container.innerHTML = pageEntries.map(entry => `
         <div class="entry-card">
-            <div class="entry-expression">${escapeHtml(entry.expression)}</div>
+            <div class="entry-expression">${parseMarkdown(entry.expression)}</div>
             <div class="entry-actions">
                 <button class="btn btn-edit" onclick="openEditModal(${entry.id})">編集</button>
                 <button class="btn btn-delete" onclick="deleteEntry(${entry.id})">削除</button>
@@ -445,9 +445,11 @@ function escapeHtml(text) {
 // シンプルMarkdown変換（斜体のみ）
 function parseMarkdown(text) {
     if (!text) return '';
-    // まずHTMLエスケープしてから*text*を<i>text</i>に変換
+    // まずHTMLエスケープしてから**text**を<strong>text</strong>に、*text*を<i>text</i>に変換
     const escaped = escapeHtml(text);
-    const result = escaped.replace(/\*([^*]+)\*/g, '<i>$1</i>');
+    const result = escaped
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<i>$1</i>');
     console.log('parseMarkdown input:', text, 'output:', result);
     return result;
 }
