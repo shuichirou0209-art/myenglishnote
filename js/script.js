@@ -403,7 +403,7 @@ function updateDisplay() {
             
             ${entry.notes ? `
                 <div class="entry-notes">
-                    <strong>コメント:</strong><br>${parseMarkdown(entry.notes.replace(/\n/g, '<br>'))}
+                    <strong>コメント:</strong><br>${parseMarkdown(entry.notes).replace(/\n/g, '<br>')}
                 </div>
             ` : ''}
 
