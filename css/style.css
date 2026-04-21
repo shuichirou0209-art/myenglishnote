@@ -276,13 +276,10 @@ textarea:focus {
     border-radius: 4px;
     color: #555;
     font-size: 0.95em;
-    text-align: left;
 }
 
-.entry-notes strong {
-    display: block;
-    margin-bottom: 5px;
-    color: #333;
+.entry-notes + .entry-notes {
+    margin-top: 5px;
 }
 
 .entry-tags {
