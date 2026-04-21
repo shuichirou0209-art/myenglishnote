@@ -258,14 +258,14 @@ textarea:focus {
 }
 
 .example-item {
-    margin-left: 5px;
-    margin-top: 5px;
+    margin-left: 0;
+    margin-top: 8px;
     padding: 15px;
     background: #f9f9f9;
     border-radius: 4px;
     font-style: italic;
     color: #666;
-    width: calc(100% - 10px);
+    width: 100%;
     box-sizing: border-box;
 }
 
@@ -276,7 +276,13 @@ textarea:focus {
     border-radius: 4px;
     color: #555;
     font-size: 0.95em;
-    white-space: pre-wrap;
+    text-align: left;
+}
+
+.entry-notes strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
 }
 
 .entry-tags {
