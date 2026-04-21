@@ -12,17 +12,18 @@ body {
 }
 
 .container {
-    max-width: 100%;
-    margin: 0 auto;
+    width: 100vw;
+    min-height: 100vh;
+    margin: 0;
     background: white;
     border-radius: 0;
-    padding: 40px;
+    padding: 20px;
     box-shadow: none;
 }
 
 h1 {
     color: #333;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
     font-size: 2em;
 }
@@ -58,7 +59,7 @@ h2 {
 /* フォーム */
 .form-section {
     background: #f9f9f9;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     margin-bottom: 30px;
 }
@@ -418,7 +419,7 @@ textarea:focus {
 /* タグ絞り込み */
 .tag-filter-section {
     background: #f9f9f9;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     margin-bottom: 30px;
 }
