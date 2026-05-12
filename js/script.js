@@ -411,8 +411,8 @@ function updateDisplay() {
         <div class="entry-card">
             <div class="entry-expression">${parseMarkdown(entry.expression)}</div>
             <div class="entry-actions">
-                <button class="btn btn-edit" onclick="openEditModal(${entry.id})">編集</button>
-                <button class="btn btn-delete" onclick="deleteEntry(${entry.id})">削除</button>
+                <span class="entry-action-link" onclick="openEditModal(${entry.id})">編集</span>
+                <span class="entry-action-link delete" onclick="deleteEntry(${entry.id})">削除</span>
             </div>
 
             <div class="entry-meaning">
@@ -427,17 +427,18 @@ function updateDisplay() {
             ` : ''}
             
             ${entry.notes ? `
-                <strong>コメント:</strong>
-                <div class="entry-notes">${parseMarkdown(entry.notes).replace(/\n/g, '<br>')}</div>
+                <div class="entry-notes">
+                    <strong>コメント:</strong> ${parseMarkdown(entry.notes)}
+                </div>
             ` : ''}
-
+            
             ${entry.tags.length > 0 ? `
                 <div class="entry-tags">
                     ${entry.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
                 </div>
             ` : ''}
-
-            <small style="color: #999;">作成: ${entry.createdAt}</small>
+            
+            <div class="entry-date">作成日: ${entry.createdAt}</div>
         </div>
     `).join('');
 }
