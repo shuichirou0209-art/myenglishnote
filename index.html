@@ -75,17 +75,25 @@
         <div class="list-section">
             <h2>表現一覧 (<span id="entryCount">0</span>件)</h2>
             <div class="pagination" id="paginationTop">
-                <button id="prevTop" class="btn btn-secondary" onclick="changePage(-1)">前へ</button>
-                <span id="pageIndicatorTop">1 / 1</span>
-                <button id="nextTop" class="btn btn-secondary" onclick="changePage(1)">次へ</button>
+                <div class="pagination-controls">
+                    <button id="firstTop" class="btn btn-secondary" onclick="goToPage(1)">&lt;&lt;</button>
+                    <button id="prevTop" class="btn btn-secondary" onclick="changePage(-1)">&lt;</button>
+                    <div id="pageNumbersTop" class="page-numbers"></div>
+                    <button id="nextTop" class="btn btn-secondary" onclick="changePage(1)">&gt;</button>
+                    <button id="lastTop" class="btn btn-secondary" onclick="goToPage('last')">&gt;&gt;</button>
+                </div>
             </div>
             <div id="entriesList" class="entries-list">
                 <p class="empty-message">エントリがまだありません</p>
             </div>
             <div class="pagination" id="paginationBottom">
-                <button id="prevBottom" class="btn btn-secondary" onclick="changePage(-1)">前へ</button>
-                <span id="pageIndicatorBottom">1 / 1</span>
-                <button id="nextBottom" class="btn btn-secondary" onclick="changePage(1)">次へ</button>
+                <div class="pagination-controls">
+                    <button id="firstBottom" class="btn btn-secondary" onclick="goToPage(1)">&lt;&lt;</button>
+                    <button id="prevBottom" class="btn btn-secondary" onclick="changePage(-1)">&lt;</button>
+                    <div id="pageNumbersBottom" class="page-numbers"></div>
+                    <button id="nextBottom" class="btn btn-secondary" onclick="changePage(1)">&gt;</button>
+                    <button id="lastBottom" class="btn btn-secondary" onclick="goToPage('last')">&gt;&gt;</button>
+                </div>
             </div>
 
             <div class="backup-actions">

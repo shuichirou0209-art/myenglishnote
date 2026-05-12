@@ -420,6 +420,44 @@ textarea:focus {
     margin: 15px 0;
 }
 
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-page {
+    background: #e2e8f0;
+    color: #4a5568;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.2s;
+}
+
+.btn-page:hover {
+    background: #cbd5e0;
+}
+
+.btn-page.active {
+    background: #667eea;
+    color: white;
+}
+
+.btn-page:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
 .pagination span {
     font-weight: 700;
     color: #333;

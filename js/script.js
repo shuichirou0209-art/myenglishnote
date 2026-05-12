@@ -354,12 +354,21 @@ function changePage(direction) {
     updateDisplay();
 }
 
+// 指定ページに移動
+function goToPage(page) {
+    const totalPages = Math.max(1, Math.ceil(filteredEntries.length / itemsPerPage));
+    if (page === 'last') {
+        currentPage = totalPages;
+    } else {
+        currentPage = Math.max(1, Math.min(totalPages, page));
+    }
+    updateDisplay();
+}
+
 // 表示更新（ページネーション対応）
 function updateDisplay() {
     const container = document.getElementById('entriesList');
     const countSpan = document.getElementById('entryCount');
-    const pageIndicatorTop = document.getElementById('pageIndicatorTop');
-    const pageIndicatorBottom = document.getElementById('pageIndicatorBottom');
 
     const totalItems = filteredEntries.length;
     const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
@@ -370,12 +379,28 @@ function updateDisplay() {
     const pageEntries = filteredEntries.slice(start, end);
 
     countSpan.textContent = totalItems;
-    pageIndicatorTop.textContent = `${currentPage} / ${totalPages}`;
-    pageIndicatorBottom.textContent = `${currentPage} / ${totalPages}`;
+
+    // ページネーション生成
+    const generatePageNumbers = () => {
+        let pages = [];
+        const startPage = Math.max(1, currentPage - 3);
+        const endPage = Math.min(totalPages, currentPage + 3);
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(`<button class="btn btn-page ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`);
+        }
+        return pages.join('');
+    };
+
+    document.getElementById('pageNumbersTop').innerHTML = generatePageNumbers();
+    document.getElementById('pageNumbersBottom').innerHTML = generatePageNumbers();
 
     // ボタン活性化/非活性化
-    document.getElementById('prevTop').disabled = document.getElementById('prevBottom').disabled = currentPage === 1;
-    document.getElementById('nextTop').disabled = document.getElementById('nextBottom').disabled = currentPage === totalPages;
+    const disableFirst = currentPage === 1;
+    const disableLast = currentPage === totalPages;
+    document.getElementById('firstTop').disabled = document.getElementById('firstBottom').disabled = disableFirst;
+    document.getElementById('prevTop').disabled = document.getElementById('prevBottom').disabled = disableFirst;
+    document.getElementById('nextTop').disabled = document.getElementById('nextBottom').disabled = disableLast;
+    document.getElementById('lastTop').disabled = document.getElementById('lastBottom').disabled = disableLast;
 
     if (totalItems === 0) {
         container.innerHTML = '<p class="empty-message">該当する表現がありません</p>';
